@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import Config
-from .extensions import db
+from .models import db
 from .routes import main
 
 def create_app():
@@ -11,7 +11,11 @@ def create_app():
 
     with app.app_context():
         from . import routes
+        from .models import User
+        db.create_all()
+
 
     app.register_blueprint(main)
+
 
     return app
