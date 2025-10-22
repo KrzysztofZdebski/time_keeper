@@ -2,13 +2,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .models import User, db
 from werkzeug.security import check_password_hash
 
-bp = Blueprint('routes', __name__)
+main = Blueprint('main', __name__)
 
-@bp.route('/')
+@main.route('/')
 def index():
     return redirect(url_for('routes.login'))
 
-@bp.route('/login', methods=['GET', 'POST'])
+@main.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -24,6 +24,6 @@ def login():
 
     return render_template('login.html')
 
-@bp.route('/dashboard')
+@main.route('/dashboard')
 def dashboard():
     return "<h2>Witaj w panelu użytkownika!</h2>"
