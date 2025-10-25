@@ -13,15 +13,22 @@
     </style>
 </head>
 <body>
-    <h2>Wybierz projekt, nad którym chcesz pracować:</h2>
-    <ul>
-    {% for project in projects %}
-        <li>
-            {{ project.name }}
-            <button onclick="alert('Start {{ project.name }}')">Start</button>
-            <button onclick="alert('Stop {{ project.name }}')">Stop</button>
-        </li>
-    {% endfor %}
-    </ul>
+    <h2>Wybierz projekt:</h2>
+<ul>
+  {% for project in projects %}
+    <li>
+      {{ project.name }}
+      <form method="POST" action="{{ url_for('main.start_session') }}" style="display:inline;">
+        <input type="hidden" name="project_id" value="{{ project.id }}">
+        <button type="submit">Start</button>
+      </form>
+      <form method="POST" action="{{ url_for('main.stop_session') }}" style="display:inline;">
+        <button type="submit">Stop</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+
+
 </body>
 </html>

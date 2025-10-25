@@ -13,6 +13,9 @@ def create_app():
         from . import routes
         from .models import User
         db.create_all()
+        # user = User(email='email@gmail.com',password='password')
+        # db.session.add(user)
+        # db.session.commit()
 
 
     app.register_blueprint(main)
