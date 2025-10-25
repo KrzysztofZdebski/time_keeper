@@ -6,7 +6,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return redirect(url_for('routes.login'))
+    return redirect(url_for('main.login'))
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -20,10 +20,15 @@ def login():
             return redirect(url_for('routes.dashboard'))
         else:
             flash('Nieprawidłowy email lub hasło', 'error')
-            return redirect(url_for('routes.login'))
+            return redirect(url_for('main.dashboard'))
 
     return render_template('login.html')
 
 @main.route('/dashboard')
 def dashboard():
-    return "<h2>Witaj w panelu użytkownika!</h2>"
+    projects = [
+        {'id': 1, 'name': 'Projekt A'},
+        {'id': 2, 'name': 'Projekt B'},
+        {'id': 3, 'name': 'Projekt C'}
+    ]
+    return render_template('dashboard.html', projects=projects)
