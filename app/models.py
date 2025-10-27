@@ -15,7 +15,7 @@ class SessionEntry(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=True)
-
+    project_id = db.Column(db.Integer, nullable=False)
     user = db.relationship('User', backref=db.backref('sessions', lazy=True))
 
     def __repr__(self):
