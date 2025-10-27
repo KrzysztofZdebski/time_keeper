@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logowanie</title>
+    <title>Rejestracja</title>
     <style>
         body {
             font-family: Arial;
@@ -13,7 +13,7 @@
             height: 100vh;
             background-color: #f4f4f4;
         }
-        .login-box {
+        .register-box {
             background: white;
             padding: 30px;
             border-radius: 12px;
@@ -26,6 +26,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
+            box-sizing: border-box;
         }
         button {
             width: 100%;
@@ -39,15 +40,15 @@
         button:hover {
             background-color: #005ea0;
         }
-        .register-link {
+        .login-link {
             text-align: center;
             margin-top: 15px;
         }
-        .register-link a {
+        .login-link a {
             color: #0078d7;
             text-decoration: none;
         }
-        .register-link a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
         .error {
@@ -57,11 +58,18 @@
             border-radius: 8px;
             margin-bottom: 10px;
         }
+        .success {
+            color: green;
+            background-color: #e6ffe6;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h2>Logowanie</h2>
+    <div class="register-box">
+        <h2>Rejestracja</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -69,13 +77,14 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <form action="/login" method="POST">
+        <form action="/register" method="POST">
             <input type="email" name="email" placeholder="Email" required><br>
             <input type="password" name="password" placeholder="Hasło" required><br>
-            <button type="submit">Zaloguj</button>
+            <input type="password" name="confirm_password" placeholder="Potwierdź hasło" required><br>
+            <button type="submit">Zarejestruj się</button>
         </form>
-        <div class="register-link">
-            <p>Nie masz konta? <a href="{{ url_for('main.register') }}">Zarejestruj się</a></p>
+        <div class="login-link">
+            <p>Masz już konto? <a href="{{ url_for('main.login') }}">Zaloguj się</a></p>
         </div>
     </div>
 </body>

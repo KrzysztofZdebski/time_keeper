@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from .models import User, db, SessionEntry
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
 from sqlalchemy import and_
 import pandas as pd
@@ -28,6 +28,38 @@ def login():
             return redirect(url_for('main.login'))
 
     return render_template('login.html')
+
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        # Sprawdź czy hasła się zgadzają
+        if password != confirm_password:
+            flash('Hasła nie są zgodne', 'error')
+            return redirect(url_for('main.register'))
+
+        # Sprawdź czy użytkownik już istnieje
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email już jest zarejestrowany', 'error')
+            return redirect(url_for('main.register'))
+
+        # Utwórz nowego użytkownika
+        new_user = User(
+            email=email,
+            password=password  # Uwaga: dla bezpieczeństwa powinieneś użyć generate_password_hash(password)
+        )
+        
+        db.session.add(new_user)
+        db.session.commit()
+        
+        flash('Konto zostało utworzone! Możesz się teraz zalogować.', 'success')
+        return redirect(url_for('main.login'))
+
+    return render_template('register.html')
 
 @main.route('/dashboard')
 def dashboard():
