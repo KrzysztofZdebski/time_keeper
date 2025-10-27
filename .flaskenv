@@ -1,3 +1,9 @@
 FLASK_APP=run.py
 FLASK_ENV=development
-DATABASE_URL=sqlite:///app.db
+SECRET_KEY=your_secret_key_here
+DB_PASSWORD=Time-keeper123
+PUBLIC_IP_ADDRESS=35.195.28.75
+DB_NAME=time-keeper
+PROJECT_ID=tactile-pulsar-476415-c9
+INSTANCE_NAME=time-keeper-db
+CLOUD_SQL_CONNECTION_NAME=tactile-pulsar-476415-c9:europe-west1:time-keeper-db

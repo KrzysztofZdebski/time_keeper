@@ -6,3 +6,4 @@ Flask-Login
 python-dotenv
 pandas
 datetime
+mysqlclient
