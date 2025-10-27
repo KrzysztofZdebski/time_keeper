@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Raport projektów</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h2 style="text-align: center;">Raport godzin pracy na projektach</h2>
+
+  {% if chart_data %}
+<div style="text-align: center;">
+ <h3>Wygenerowane przez: {{user_name}}</h3>
+ <h3>Data generacji: {{date}}</h3>
+ <h3>Zakres: {{start_str}} - {{end_str}}</h2>
+</div>
+    <canvas id="barChart" width="800" height="400"></canvas>
+
+    <script>
+      const ctx = document.getElementById('barChart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: {{ chart_data.labels | tojson }},
+          datasets: {{ chart_data.datasets | tojson }}
+        },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Czas pracy na projektach (godziny)'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + context.parsed.y.toFixed(2) + ' h';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              title: { display: true, text: 'Data' }
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              title: { display: true, text: 'Czas (h)' }
+            }
+          }
+        }
+      });
+    </script>
+  {% else %}
+    <p>Brak danych dla wybranego zakresu.</p>
+  {% endif %}
+</body>
+</html>

@@ -4,3 +4,5 @@ Flask-Migrate
 Flask-WTF
 Flask-Login
 python-dotenv
+pandas
+datetime

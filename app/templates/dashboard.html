@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel użytkownika</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h2 { color: #333; }
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 10px; }
-        button { margin-left: 10px; padding: 5px 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel użytkownika</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { color: #333; }
+    ul { list-style: none; padding: 0; }
+    li { margin-bottom: 10px; }
+    button { margin-left: 10px; padding: 5px 10px; }
+  </style>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
 </head>
 <body>
-    <h2>Wybierz projekt:</h2>
-<ul>
-  {% for project in projects %}
+  <h2>Wybierz projekt:</h2>
+  <ul>
+    {% for project in projects %}
     <li>
       {{ project.name }}
       <form method="POST" action="{{ url_for('main.start_session') }}" style="display:inline;">
@@ -26,9 +30,84 @@
         <button type="submit">Stop</button>
       </form>
     </li>
-  {% endfor %}
-</ul>
+    {% endfor %}
+  </ul>
 
+  <h2>Wygeneruj raport</h2>
+  <h3>Wybierz zakres dat i godzin</h3>
+
+  <form id="dateForm" action="/generate_report" method="POST">
+    <input id="rangePicker" placeholder="Wybierz zakres dat" />
+
+    <!-- ukryte pola do wysłania do Flaska -->
+    <input type="hidden" id="start" name="start">
+    <input type="hidden" id="end" name="end">
+
+    <br><br>
+    <button type="submit">Szukaj</button>
+  </form>
+
+  <script>
+  let lastSelectedDates = [];
+
+  const picker = flatpickr("#rangePicker", {
+    mode: "range",
+    enableTime: true,
+    time_24hr: true,
+    dateFormat: "Y-m-d H:i",
+    onClose: function(selectedDates, dateStr, instance) {
+      lastSelectedDates = selectedDates; // zapamiętujemy wybrane daty
+
+      if (selectedDates.length === 2) {
+        const startDate = selectedDates[0];
+        const endDate = selectedDates[1];
+
+        const diffMs = endDate - startDate;
+        const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+        if (diffDays > 31) {
+          alert("⛔ Zakres nie może przekraczać 31 dni!");
+          instance.clear();
+          document.getElementById("start").value = "";
+          document.getElementById("end").value = "";
+          lastSelectedDates = [];
+          return;
+        }
+
+        const startFormatted = instance.formatDate(startDate, "Y-m-d H:i");
+        const endFormatted = instance.formatDate(endDate, "Y-m-d H:i");
+        document.getElementById("start").value = startFormatted;
+        document.getElementById("end").value = endFormatted;
+      } else {
+        document.getElementById("start").value = "";
+        document.getElementById("end").value = "";
+      }
+    }
+  });
+
+  // Walidacja przy wysyłaniu formularza
+  document.getElementById("dateForm").addEventListener("submit", function(e) {
+    const startVal = document.getElementById("start").value;
+    const endVal = document.getElementById("end").value;
+
+    // 🔒 brak dat → blokuj
+    if (!startVal || !endVal || lastSelectedDates.length < 2) {
+      alert("❗ Wybierz zakres dat przed wysłaniem formularza.");
+      e.preventDefault();
+      return;
+    }
+
+    const startDate = new Date(startVal);
+    const endDate = new Date(endVal);
+    const diffDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+    if (diffDays > 31) {
+      alert("⛔ Zakres nie może przekraczać 31 dni!");
+      e.preventDefault();
+      return;
+    }
+  });
+  </script>
 
 </body>
 </html>
